@@ -79,7 +79,7 @@ def format_vnd(val):
         return "0 đ"
 
 # --- 4. GIAO DIỆN CHÍNH ---
-st.title("💎 Quản Lý Bán Hàng Chuyên Nghiệp")
+st.title("💎 Phương Uyên Bán Hàng Chuyên Nghiệp")
 menu = st.sidebar.radio("MENU ĐIỀU KHIỂN", ["🛒 BÁN HÀNG", "📦 QUẢN LÝ KHO", "📊 BÁO CÁO HIỆU SUẤT"])
 
 # === TAB 1: BÁN HÀNG ===
@@ -318,3 +318,4 @@ elif menu == "📊 BÁO CÁO HIỆU SUẤT":
             st.info("Không có dữ liệu trong khoảng thời gian này.")
     else:
         st.warning("Chưa có dữ liệu bán hàng nào.")
+
