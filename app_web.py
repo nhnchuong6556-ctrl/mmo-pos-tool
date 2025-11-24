@@ -133,13 +133,13 @@ if menu == "🛒 BÁN HÀNG":
                     rev = price * qty
                     prof = (price - base_cost) * qty
                     vietnam_tz = pytz.timezone('Asia/Ho_Chi_Minh')
-                    now = datetime.now(vietnam_tz)
-                    now_naive = now.replace(tzinfo=None)
-                    
-                    row_data = [
-                        now_naive.strftime("%Y-%m-%d"),
-                        now_naive.strftime("%H:%M:%S"),
-                        selected_prod,
+now = datetime.now(vietnam_tz)
+now_naive = now.replace(tzinfo=None)
+
+row_data = [
+    now_naive.strftime("%Y-%m-%d"), # <-- Quan trọng: Đã dùng now_naive
+    now_naive.strftime("%H:%M:%S"), # <-- Quan trọng: Đã dùng now_naive
+    selected_prod,
                         base_cost, # Lưu giá gốc tại thời điểm bán
                         price,
                         qty,
@@ -307,5 +307,6 @@ elif menu == "📊 BÁO CÁO HIỆU SUẤT":
             st.info("Không có dữ liệu trong khoảng thời gian này.")
     else:
         st.warning("Chưa có dữ liệu bán hàng nào.")
+
 
 
