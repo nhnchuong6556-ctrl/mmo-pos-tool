@@ -5,7 +5,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
 import time
 import os
-
+import pytz
 # --- 1. CẤU HÌNH HỆ THỐNG & CSS CHUYÊN NGHIỆP ---
 st.set_page_config(page_title="Phương Uyên POS Pro", page_icon="💎", layout="wide")
 
@@ -132,11 +132,13 @@ if menu == "🛒 BÁN HÀNG":
                 else:
                     rev = price * qty
                     prof = (price - base_cost) * qty
-                    now = datetime.now()
+                    vietnam_tz = pytz.timezone('Asia/Ho_Chi_Minh')
+                    now = datetime.now(vietnam_tz)
+                    now_naive = now.replace(tzinfo=None)
                     
                     row_data = [
-                        now.strftime("%Y-%m-%d"),
-                        now.strftime("%H:%M:%S"),
+                        now_naive.strftime("%Y-%m-%d"),
+                        now_naive.strftime("%H:%M:%S"),
                         selected_prod,
                         base_cost, # Lưu giá gốc tại thời điểm bán
                         price,
@@ -305,4 +307,5 @@ elif menu == "📊 BÁO CÁO HIỆU SUẤT":
             st.info("Không có dữ liệu trong khoảng thời gian này.")
     else:
         st.warning("Chưa có dữ liệu bán hàng nào.")
+
 
