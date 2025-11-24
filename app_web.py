@@ -31,12 +31,20 @@ if not os.path.exists('images'):
 @st.cache_resource
 def connect_google_sheet():
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
+    
     try:
-        creds = ServiceAccountCredentials.from_json_keyfile_name("secrets.toml", scope)
+        # Lấy thông tin bảo mật trực tiếp từ biến môi trường Streamlit (TOML)
+        # Tên "gsheets" phải khớp với tiêu đề [gsheets] bạn đã dán vào Cloud
+        creds = ServiceAccountCredentials.from_service_account_info(
+            st.secrets["gsheets"], scope
+        )
         client = gspread.authorize(creds)
+        # Mở file Google Sheet theo tên
         return client.open("MMO_DATABASE")
     except Exception as e:
-        st.error(f"❌ Lỗi kết nối: {e}")
+        # Nếu lỗi, báo lỗi bảo mật
+        st.error(f"❌ LỖI KẾT NỐI API: Hãy kiểm tra lại nội dung dán trong mục Secrets.")
+        st.write(f"Chi tiết lỗi: {e}")
         return None
 
 sh = connect_google_sheet()
