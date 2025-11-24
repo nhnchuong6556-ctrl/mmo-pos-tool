@@ -162,15 +162,14 @@ if menu == "🛒 BÁN HÀNG":
             
         df_trans = load_data("Trans")
         if not df_trans.empty:
-            # Hiển thị bảng gọn gàng hơn
-            df_show = df_trans.tail(15).iloc[::-1][['Time', 'Product', 'Revenue', 'Profit']]
-            df_show.columns = ['Giờ', 'Sản Phẩm', 'Doanh Thu', 'Lợi Nhuận']
-            
-            # Format cột tiền tệ cho đẹp
-            df_show['Doanh Thu'] = df_show['Doanh Thu'].apply(format_vnd)
-            df_show['Lợi Nhuận'] = df_show['Lợi Nhuận'].apply(format_vnd)
-            
-            st.dataframe(df_show, use_container_width=True, hide_index=True, height=500)
+        df_show = df_trans.tail(15).iloc[::-1][['Time', 'Product', 'Revenue', 'Profit']].copy()
+        df_show['Time'] = df_show['Time'].astype(str) # Ép kiểu sang chuỗi để tránh lỗi định dạng
+        df_show.columns = ['Giờ', 'Sản Phẩm', 'Doanh Thu', 'Lợi Nhuận']
+        
+        df_show['Doanh Thu'] = df_show['Doanh Thu'].apply(format_vnd)
+        df_show['Lợi Nhuận'] = df_show['Lợi Nhuận'].apply(format_vnd)
+        
+        st.dataframe(df_show, use_container_width=True, hide_index=True, height=500)
 
 # === TAB 2: QUẢN LÝ KHO (NÂNG CẤP) ===
 elif menu == "📦 QUẢN LÝ KHO":
