@@ -5,7 +5,8 @@ from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
 import time
 import os
-import pytz
+import pytz # Đã thêm pytz
+
 # --- 1. CẤU HÌNH HỆ THỐNG & CSS CHUYÊN NGHIỆP ---
 st.set_page_config(page_title="Phương Uyên POS Pro", page_icon="💎", layout="wide")
 
@@ -132,14 +133,16 @@ if menu == "🛒 BÁN HÀNG":
                 else:
                     rev = price * qty
                     prof = (price - base_cost) * qty
+                    
+                    # FIX LỖI MÚI GIỜ GMT+7 (ĐÃ SỬA CHUẨN CÚ PHÁP)
                     vietnam_tz = pytz.timezone('Asia/Ho_Chi_Minh')
-now = datetime.now(vietnam_tz)
-now_naive = now.replace(tzinfo=None)
+                    now = datetime.now(vietnam_tz)
+                    now_naive = now.replace(tzinfo=None) 
 
-row_data = [
-    now_naive.strftime("%Y-%m-%d"), # <-- Quan trọng: Đã dùng now_naive
-    now_naive.strftime("%H:%M:%S"), # <-- Quan trọng: Đã dùng now_naive
-    selected_prod,
+                    row_data = [
+                        now_naive.strftime("%Y-%m-%d"), # Dùng now_naive (Ngày)
+                        now_naive.strftime("%H:%M:%S"), # Dùng now_naive (Giờ)
+                        selected_prod,
                         base_cost, # Lưu giá gốc tại thời điểm bán
                         price,
                         qty,
@@ -147,7 +150,8 @@ row_data = [
                         prof
                     ]
                     
-    with st.spinner("Đang xử lý giao dịch..."):
+                    # Dòng with st.spinner đã được thụt lề đúng
+                    with st.spinner("Đang xử lý giao dịch..."):
                         ws_trans.append_row(row_data)
                         clear_cache() # Xóa cache để cập nhật lịch sử ngay
                         st.toast(f"✅ Đã bán: {selected_prod} - {format_vnd(rev)}", icon="🎉")
@@ -174,6 +178,7 @@ row_data = [
         else:
             st.info("Chưa có giao dịch nào.")
 
+# ---
 # === TAB 2: QUẢN LÝ KHO (NÂNG CẤP) ===
 elif menu == "📦 QUẢN LÝ KHO":
     st.header("📦 Quản Lý Kho Hàng & Sản Phẩm")
@@ -268,6 +273,7 @@ elif menu == "📦 QUẢN LÝ KHO":
                         except Exception as e:
                             st.error(f"Lỗi khi xóa: {e}")
 
+# ---
 # === TAB 3: BÁO CÁO (NÂNG CẤP) ===
 elif menu == "📊 BÁO CÁO HIỆU SUẤT":
     st.header("📊 Báo Cáo Doanh Thu & Lợi Nhuận")
@@ -277,9 +283,14 @@ elif menu == "📊 BÁO CÁO HIỆU SUẤT":
         # Chuyển cột Date sang datetime để lọc chuẩn xác
         df['Date_Obj'] = pd.to_datetime(df['Date'])
         
+        # Sửa lỗi múi giờ cho date_input (nếu muốn)
+        vietnam_tz = pytz.timezone('Asia/Ho_Chi_Minh')
+        now_vn = datetime.now(vietnam_tz)
+        
         c1, c2 = st.columns(2)
-        d_start = c1.date_input("Từ ngày", datetime.now())
-        d_end = c2.date_input("Đến ngày", datetime.now())
+        # Sử dụng múi giờ Việt Nam cho datetime.now() trong date_input
+        d_start = c1.date_input("Từ ngày", now_vn) 
+        d_end = c2.date_input("Đến ngày", now_vn) 
         
         # Lọc dữ liệu
         mask = (df['Date_Obj'].dt.date >= d_start) & (df['Date_Obj'].dt.date <= d_end)
@@ -307,8 +318,3 @@ elif menu == "📊 BÁO CÁO HIỆU SUẤT":
             st.info("Không có dữ liệu trong khoảng thời gian này.")
     else:
         st.warning("Chưa có dữ liệu bán hàng nào.")
-
-
-
-
-
