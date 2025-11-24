@@ -154,9 +154,11 @@ if menu == "🛒 BÁN HÀNG":
 
     with c2:
         st.subheader("🕒 Lịch Sử Gần Nhất")
-        if st.button("🔄 Làm mới dữ liệu"):
-            clear_cache()
-            st.rerun()
+        
+        # Nút mới: Dùng form để cách ly lệnh khỏi luồng chính
+        with st.form("refresh_form"):
+            st.form_submit_button("🔄 TẢI LẠI DỮ LIỆU", use_container_width=True, type="secondary", 
+                                  on_click=clear_cache) # Bấm nút là xóa cache
             
         df_trans = load_data("Trans")
         if not df_trans.empty:
@@ -303,3 +305,4 @@ elif menu == "📊 BÁO CÁO HIỆU SUẤT":
             st.info("Không có dữ liệu trong khoảng thời gian này.")
     else:
         st.warning("Chưa có dữ liệu bán hàng nào.")
+
