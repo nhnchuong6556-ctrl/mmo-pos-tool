@@ -154,22 +154,23 @@ if menu == "🛒 BÁN HÀNG":
 
     with c2:
         st.subheader("🕒 Lịch Sử Gần Nhất")
-        
-        # Nút mới: Dùng form để cách ly lệnh khỏi luồng chính
-        with st.form("refresh_form"):
-            st.form_submit_button("🔄 TẢI LẠI DỮ LIỆU", use_container_width=True, type="secondary", 
-                                  on_click=clear_cache) # Bấm nút là xóa cache
+        if st.button("🔄 LÀM MỚI DỮ LIỆU", use_container_width=True):
+            clear_cache()
+            st.rerun()
             
         df_trans = load_data("Trans")
         if not df_trans.empty:
-        df_show = df_trans.tail(15).iloc[::-1][['Time', 'Product', 'Revenue', 'Profit']].copy()
-        df_show['Time'] = df_show['Time'].astype(str) # Ép kiểu sang chuỗi để tránh lỗi định dạng
-        df_show.columns = ['Giờ', 'Sản Phẩm', 'Doanh Thu', 'Lợi Nhuận']
-        
-        df_show['Doanh Thu'] = df_show['Doanh Thu'].apply(format_vnd)
-        df_show['Lợi Nhuận'] = df_show['Lợi Nhuận'].apply(format_vnd)
-        
-        st.dataframe(df_show, use_container_width=True, hide_index=True, height=500)
+            # Lấy 15 đơn gần nhất và đổi tên cột để hiển thị
+            df_show = df_trans.tail(15).iloc[::-1][['Time', 'Product', 'Revenue', 'Profit']].copy()
+            df_show.columns = ['Giờ', 'Sản Phẩm', 'Doanh Thu', 'Lợi Nhuận']
+            
+            # Format cột tiền tệ
+            df_show['Doanh Thu'] = df_show['Doanh Thu'].apply(format_vnd)
+            df_show['Lợi Nhuận'] = df_show['Lợi Nhuận'].apply(format_vnd)
+            
+            st.dataframe(df_show, use_container_width=True, hide_index=True, height=500)
+        else:
+            st.info("Chưa có giao dịch nào.")
 
 # === TAB 2: QUẢN LÝ KHO (NÂNG CẤP) ===
 elif menu == "📦 QUẢN LÝ KHO":
@@ -304,3 +305,4 @@ elif menu == "📊 BÁO CÁO HIỆU SUẤT":
             st.info("Không có dữ liệu trong khoảng thời gian này.")
     else:
         st.warning("Chưa có dữ liệu bán hàng nào.")
+
