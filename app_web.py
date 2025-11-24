@@ -147,7 +147,7 @@ row_data = [
                         prof
                     ]
                     
-                    with st.spinner("Đang xử lý giao dịch..."):
+                with st.spinner("Đang xử lý giao dịch..."):
                         ws_trans.append_row(row_data)
                         clear_cache() # Xóa cache để cập nhật lịch sử ngay
                         st.toast(f"✅ Đã bán: {selected_prod} - {format_vnd(rev)}", icon="🎉")
@@ -307,6 +307,7 @@ elif menu == "📊 BÁO CÁO HIỆU SUẤT":
             st.info("Không có dữ liệu trong khoảng thời gian này.")
     else:
         st.warning("Chưa có dữ liệu bán hàng nào.")
+
 
 
 
